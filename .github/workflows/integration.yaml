@@ -1,0 +1,38 @@
+name: Integration
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build Docker image
+        run: docker build -t myapp .
+  lint:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lint
+        run: |
+          docker run myapp sh -c "pip install pylint && pylint ws-petproject/main"
+  flake8:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: flake8
+        run: |
+          docker run myapp sh -c "pip install flake8 && flake8 ws-petproject/main"
+  mypy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: mypy
+        run: |
+          docker run myapp sh -c "pip install mypy && mypy ws-petproject/main"
+  black:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: black
+        run: |
+          docker run myapp sh -c "pip install black && black --check ws-petproject/main
