@@ -10,6 +10,7 @@ async def save_data_to_mongo(data: list):
     client = motor.motor_asyncio.AsyncIOMotorClient(settings.mongo_url)
     db = client[settings.db_name]
     collection = db[settings.collection_name]
+
     for item in data:
         item_without_id = {key: value for key, value in item.items() if key != "_id"}
         await collection.update_one({'symbol': item['symbol']}, {'$set': item_without_id}, upsert=True)

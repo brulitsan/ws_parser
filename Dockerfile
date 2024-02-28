@@ -2,7 +2,7 @@ FROM python:3.10
 
 WORKDIR /app
 
-COPY . /app
+ADD . /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -14,4 +14,4 @@ RUN poetry config virtualenvs.create false && poetry install --no-interaction --
 
 EXPOSE 5000
 
-CMD ["uvicorn", "my_parser.main:app", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["python", "my_parser/parser.py"]
