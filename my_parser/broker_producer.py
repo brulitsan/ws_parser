@@ -5,7 +5,7 @@ from aiokafka import AIOKafkaProducer
 
 
 async def send_currency_info(data: dict) -> None:
-    producer = AIOKafkaProducer(bootstrap_servers=os.environ.get('KAFKA_BROKER_PATH'))  #add logs
+    producer = AIOKafkaProducer(bootstrap_servers=os.environ.get('KAFKA_BROKER_PATH'))  # add logs
     await producer.start()
     try:
         coin_data_list = []

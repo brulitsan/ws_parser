@@ -1,8 +1,7 @@
-from fastapi import  FastAPI
 import httpx
-
 from broker_producer import send_currency_info
 from database import save_data_to_mongo
+from fastapi import FastAPI
 from schemas import ParserSettings
 
 app = FastAPI()
