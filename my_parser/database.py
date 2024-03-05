@@ -1,9 +1,8 @@
 import motor.motor_asyncio
-import os
-from .schemas import Settings
+from schemas import DbSettings
 
 
-settings = Settings()
+settings = DbSettings()
 
 
 async def save_data_to_mongo(data: list):

@@ -7,10 +7,17 @@ class CoinData(BaseModel):
     price: float
 
 
-class Settings(BaseSettings):
+class DbSettings(BaseSettings):
     mongo_url: str
     db_name: str
     collection_name: str
+
+    class Config:
+        env_file = ".env"
+
+
+class ParserSettings(BaseSettings):
+    parser_url: str
 
     class Config:
         env_file = ".env"

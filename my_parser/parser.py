@@ -1,11 +1,12 @@
-import asyncio
 from fastapi import  FastAPI
 import httpx
 
 from broker_producer import send_currency_info
-from .database import save_data_to_mongo
+from database import save_data_to_mongo
+from schemas import ParserSettings
 
 app = FastAPI()
+settings = ParserSettings()
 
 
 class ParserBinance:
@@ -14,7 +15,7 @@ class ParserBinance:
         data = []
         async with httpx.AsyncClient() as client:
             for coin in coins:
-                response = await client.get(url="https://api.binance.com/api/v3/ticker/24hr",
+                response = await client.get(url=settings.parser_url,
                                             params={"symbol": coin},
                                             )
                 price_data = response.json()

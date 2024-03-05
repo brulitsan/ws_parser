@@ -1,29 +1,19 @@
 import asyncio
-import json
+import os
 
-from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
+from aiokafka import AIOKafkaConsumer
 
 from my_parser import parser
-
-
-async def send_currency_info(data):
-    producer = AIOKafkaProducer(bootstrap_servers='kafka:9092')
-    await producer.start()
-    try:
-        for coin_data in data:
-            await producer.send_and_wait("send_crypto_info", json.dumps(coin_data).encode())
-    finally:
-        await producer.stop()
 
 
 async def take_info_about_requested_data():  # стринг валюты, которой надо найти инфу
     consumer = AIOKafkaConsumer(
         'take_crypto_requests',
-        bootstrap_servers='kafka:9092')
+        bootstrap_servers=os.environ.get('KAFKA_BROKER_PATH'))  # сделать логгирование
     await consumer.start()
     try:
         async for msg in consumer:
-            coin_data = msg.value.decode('utf-8')
+            coin_data = msg.value.decode()
             parser_binance = parser.ParserBinance()
             await parser_binance.get_binance_data(coin_data)
     finally:
