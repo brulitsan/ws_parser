@@ -1,6 +1,4 @@
 import httpx
-from broker_producer import send_currency_info
-from database import save_data_to_mongo
 from fastapi import FastAPI
 from schemas import ParserSettings
 
@@ -9,6 +7,7 @@ settings = ParserSettings()
 
 
 class ParserBinance:
+
     async def get_binance_data(self, coin_data: str):
         coins = [coin_data]
         data = []
@@ -27,5 +26,4 @@ class ParserBinance:
                     })
                 else:
                     print(f"Данные для {coin} не содержат 'highPrice', 'lowPrice' или 'lastPrice'.")
-        await save_data_to_mongo(data)
-        await send_currency_info(data)
+        return data
