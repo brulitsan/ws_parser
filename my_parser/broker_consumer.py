@@ -16,7 +16,6 @@ class ConsumerBinance:
     def __init__(self, parser: ParserBinance, settings: DbSettings):
         self.parser = parser
         self.queue = asyncio.Queue()
-        logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         self.producer = CryptoProducer(settings=settings)
         self.database = MongoManager(settings=settings)

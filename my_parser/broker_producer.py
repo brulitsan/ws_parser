@@ -24,20 +24,13 @@ class CryptoProducer:
         await self.producer.start()
         mongo_manager = self.db
         symbols = await mongo_manager.get_symbols_from_mongo()
-        try:
-            coin_data_list = []
-            for symbol in symbols:
-                coin_data = await self.parser.get_binance_data(symbol)
-                coin_data_list.append(coin_data)
-            if coin_data_list:
-                await self.producer.send_and_wait('send_crypto_info', json.dumps(coin_data_list).encode())
-                self.logger.info('Batch of messages submitted')
-        except Exception as error:
-            self.logger.error(f"Error sending data to Kafka: {error}")
-        # finally:
-        #     self.logger.info('Producer is stopping')
-        #     self.running = False
-        #     await self.producer.stop()
+        coin_data_list = []
+        for symbol in symbols:
+            coin_data = await self.parser.get_binance_data(symbol)
+            coin_data_list.append(coin_data)
+        if coin_data_list:
+            await self.producer.send_and_wait('send_crypto_info', json.dumps(coin_data_list).encode())
+            self.logger.info('Batch of messages submitted')
 
     async def send_currency_info(self, data: list[dict[str]]) -> None:
         await self.producer.start()
@@ -47,8 +40,12 @@ class CryptoProducer:
                 coin_data_list.append(coin_data)
             await self.producer.send_and_wait('send_crypto_info', json.dumps(coin_data_list).encode())
             self.logger.info('Message submitted')
+        except KeyError as error:
+            self.logger.error(f"Key error: {error}")
+        except ValueError as error:
+            self.logger.error(f"Value error: {error}")
         except Exception as error:
-            self.logger.error(f"Error sending data to Kafka: {error}")
+            self.logger.error(f"Unexpected error: {error}")
         finally:
             if not self.running:
                 await self.producer.stop()
