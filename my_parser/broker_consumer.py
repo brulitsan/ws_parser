@@ -40,7 +40,6 @@ class ConsumerBinance:
         while True:
             coin_data_bite = await self.queue.get()
             coin_data = coin_data_bite.decode()
-            print(f"coin_data = {coin_data}, {type(coin_data)}")
             data = await self.parser.get_binance_data(coin_data)
             await self.database.save_data_to_mongo(data)
             await self.producer.send_currency_info(data)
